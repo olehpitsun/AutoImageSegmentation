@@ -125,7 +125,7 @@ public class Teaching {
      * Додати вхідні параметри в БД
      * вивести останній ід
      */
-    private static int setInputValues(float histogramAverage, double redValue, double greenVlue, double blueValue) {
+    private static int setInputValues(double histogramAverage, double redValue, double greenVlue, double blueValue) {
         return Main.storeData.insertInputValues(histogramAverage, redValue, greenVlue, blueValue);
     }
 

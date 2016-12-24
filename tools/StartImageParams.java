@@ -4,14 +4,14 @@ import org.opencv.core.Mat;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 
 /**
  * Created by Oleh7 on 2/26/2016.
  */
 public class StartImageParams {
 
-    private double redValue, greenVlue, blueValue;
-    private float histogramAverage;
+    private int redValue, greenVlue, blueValue, histogramAverage;
 
     public StartImageParams(){}
 
@@ -39,28 +39,31 @@ public class StartImageParams {
             }
         }
         int num = w * h;
-        this.redValue = sumr/num;
-        this.greenVlue = sumg/num;
-        this.blueValue = sumb/num;
+        this.redValue = (int)sumr/num;
+        this.greenVlue = (int)sumg/num;
+        this.blueValue = (int)sumb/num;
 
-        float bright = (299 * sumr + 587 * sumg + 114 * sumb) / 10000;
-        bright = bright/100000;
-        this.histogramAverage = bright;
+        int bright = (int)(299 * sumr + 587 * sumg + 114 * sumb) / 10000;
+        bright = bright/1000;
+
+        this.histogramAverage = (int)bright;
+        System.out.println(  this.histogramAverage + " " +this.blueValue );
+
     }
 
-    public double getRedValue(){
+    public int getRedValue(){
         return this.redValue;
     }
 
-    public double getGreenVlue(){
+    public int getGreenVlue(){
         return this.greenVlue;
     }
 
-    public double getBlueValue(){
+    public int getBlueValue(){
         return this.blueValue;
     }
 
-    public float getHistogramAverage(){
+    public int getHistogramAverage(){
         return histogramAverage;
     }
 }

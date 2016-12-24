@@ -44,7 +44,8 @@ public class Main {
                     teaching.setOutputValues();
                     break;
                 case "2" :
-                    System.out.println("2");
+                    AutoSegmentation autoSegmentation = new AutoSegmentation(originalMat);
+                    autoSegmentation.start(stip);
                     break;
             }
         }

@@ -8,7 +8,7 @@ public class SegmentationResults {
     public  String imgName;
     public  Integer lowThresh;
     public  Integer lastID;
-    public  Float histogramAverage;
+    public  Double histogramAverage;
     public  Double redAverage;
     public  Double greenAverage;
     public  Double blueAverage;
@@ -49,11 +49,11 @@ public class SegmentationResults {
         this.lowThresh = lowThresh;
     }
 
-    public Float getHistogramAverage() {
+    public Double getHistogramAverage() {
         return histogramAverage;
     }
 
-    public void setHistogramAverage(Float histogramAverage) {
+    public void setHistogramAverage(Double histogramAverage) {
         this.histogramAverage = histogramAverage;
     }
 

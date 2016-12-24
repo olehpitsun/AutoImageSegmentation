@@ -1,6 +1,8 @@
 package lib.DB.storeData;
 
-import lib.DB.SQLDatabase;;
+import lib.DB.SQLDatabase;;import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by oleh on 19.12.2016.
@@ -11,7 +13,7 @@ public class storeData extends SQLDatabase {
 
     public storeData(){sqlSetConnect();}
 
-    public int insertInputValues(float histogram, double red, double green, double blue){
+    public int insertInputValues(double histogram, double red, double green, double blue){
 
         try {
             sqlInsertExecute("INSERT INTO processinginputvalues (histogram, red, green, blue)" +
@@ -36,7 +38,37 @@ public class storeData extends SQLDatabase {
         }
     }
 
+    public List<Integer> selectHistogramIDs(int histogramV) throws SQLException {
 
+        sqlExecute("SELECT * FROM processinginputvalues WHERE histogram = "+histogramV+" ");
+        List<Integer> IDs = new LinkedList<>();
+
+        while(resultSet.next()) {
+            IDs.add(resultSet.getInt("id"));
+        }
+
+        return IDs;
+    }
+
+    public int selectBlueValue(int id, int blue) throws SQLException {
+
+        sqlExecute("SELECT * FROM processinginputvalues WHERE id = "+id+" AND blue = "+blue+" ");
+        int newid = 0;
+        if(resultSet.next()){
+            newid = resultSet.getInt("id");
+        }
+        return newid;
+    }
+
+
+    public int getLowThresh(int priorityID) throws SQLException{
+        sqlExecute("SELECT * FROM processingoutputvalues WHERE input_id = "+priorityID+" AND human_evaluate > 0");
+        int lowlevel = 0;
+        if(resultSet.next()){
+            lowlevel = resultSet.getInt("lowthreshlevel");
+        }
+        return lowlevel;
+    }
 
 
 }
