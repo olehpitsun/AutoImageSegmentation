@@ -45,7 +45,7 @@ public class Teaching {
      */
     public void generateImages(StartImageParams stip){
 
-        List<Integer> lowTreshValue = Arrays.asList(75,80,85,90,95);
+        List<Integer> lowTreshValue = Arrays.asList(65,75,80,85,90,95, 100, 105);
 
         int lastID = setInputValues(stip.getHistogramAverage(), stip.getRedValue(), stip.getGreenVlue(), stip.getBlueValue());
 
@@ -61,11 +61,11 @@ public class Teaching {
             /*** ПОРОГОВА СЕШМЕНТАЦІЯ
              * перетворення експертного зобр в градації сірого*/
             Imgproc.threshold(newImageMat, newImageMat, 200, 255, Imgproc.THRESH_BINARY);
-            Highgui.imwrite(Main.pathToImg + i + "___" + lowTreshValue.get(i) + ".jpg", newImageMat);
+            Highgui.imwrite(Main.pathToImg + Main.imgName + "\\" + i + "___" + lowTreshValue.get(i) + ".jpg", newImageMat);
 
             /*** ПОРІВНЯННЯ ЗОБРАЖЕНЬ*/
             System.out.println("\n====================\n lowTreshValue = " + lowTreshValue.get(i) );
-            comparator.Main.main(newImageMat, this.expertImgMat);
+            //comparator.Main.main(newImageMat, this.expertImgMat);
 
             /** FRAG*/
             FRAG frag = new FRAG(newImageMat, expertImgMat);
@@ -79,6 +79,7 @@ public class Teaching {
 
     public void setOutputValues() {
 
+        /**
         int index = 0; // індекс елемента в колекції
         double minDistance = Main.segmentationResults.get(0).distance;
 
@@ -89,6 +90,7 @@ public class Teaching {
             }
         }
         storeResultDataToDB (index);// зберігання запису в БД
+        **/
         setHumanValue();
         Main.segmentationResults.clear();
     }

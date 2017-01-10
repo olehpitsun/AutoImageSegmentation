@@ -13,24 +13,45 @@ import java.util.List;
 public class AutoSegmentation {
 
     private Mat currentImgMat;
+    private int currentHistogram;
 
     public AutoSegmentation(Mat currentImgMat){
         this.currentImgMat = currentImgMat;
     }
 
-    public void start(StartImageParams stip){
+    public void start(StartImageParams stip, int currentH){
         try {
+            // якщо currentH дорівнює 0, то присвоїти this.currentHistogram поч. значення, інакше присвоїти this.currentHistogram = currentH;
+            if(currentH == 0){
+                this.currentHistogram = stip.getHistogramAverage();
+            }else{
+                this.currentHistogram = currentH;
+            }
+
+
+            System.out.println("this.currentHistogram "+this.currentHistogram);
             int priorityID = 0;//результуючий ID
-            List<Integer> histogramIDs = Main.storeData.selectHistogramIDs(stip.getHistogramAverage());
+            List<Integer> histogramIDs = Main.storeData.selectHistogramIDs(this.currentHistogram);//
+
+            for(int i = 0; i < histogramIDs.size(); i++)
+            {
+                System.out.println("ID " + histogramIDs.get(i));
+            }
+
             if(histogramIDs.size() > 0){
                 for(int i = 0; i < histogramIDs.size(); i++){
                     priorityID = Main.storeData.selectBlueValue(histogramIDs.get(i), stip.getBlueValue());
                 }
                 if(priorityID != 0){
                     this.getSPecialValuesForImage(priorityID);
-                }else {System.out.println("Blue value doesn't found");}
+                }else {
+                    System.out.println("Blue value doesn't found");
+                }
 
-            }else {System.out.println("HistogramAverage value " + stip.getHistogramAverage() + " doesn't found");}
+            }else {
+                System.out.println("HistogramAverage value " + stip.getHistogramAverage() + " doesn't found");
+                this.start(stip, this.currentHistogram-1);
+            }
         } catch (SQLException e) {e.printStackTrace();}
     }
 
@@ -48,7 +69,7 @@ public class AutoSegmentation {
         /*** ПОРОГОВА СЕШМЕНТАЦІЯ
          * перетворення експертного зобр в градації сірого*/
         Imgproc.threshold(newImageMat, newImageMat, 200, 255, Imgproc.THRESH_BINARY);
-        Highgui.imwrite(Main.pathToImg + "OK___" + lowThreshValue + ".jpg", newImageMat);
+        Highgui.imwrite(Main.pathToImg + Main.imgName + "\\" + "result_" + lowThreshValue + ".jpg", newImageMat);
     }
 
 }

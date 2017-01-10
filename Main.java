@@ -45,7 +45,7 @@ public class Main {
                     break;
                 case "2" :
                     AutoSegmentation autoSegmentation = new AutoSegmentation(originalMat);
-                    autoSegmentation.start(stip);
+                    autoSegmentation.start(stip, 0);
                     break;
             }
         }
