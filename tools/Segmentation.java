@@ -167,7 +167,7 @@ public class Segmentation {
     public static Mat thresholding(Mat src1, int minValue, int maxValue, String threhType){
 
         Mat frame = new Mat();
-
+        Imgproc.cvtColor(src1, src1, Imgproc.COLOR_BGR2GRAY);
         switch (threhType){
             case "THRESH_OTSU":
                 Imgproc.threshold(src1, frame, minValue, maxValue, Imgproc.THRESH_OTSU);

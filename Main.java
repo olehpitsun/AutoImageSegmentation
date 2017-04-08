@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class Main {
 
     public static String pathToImg = "C:\\bioimg\\testsegmentation\\watershed\\auto\\";
-    public static String imgName = "TS_06_19_13_17_42";
+    public static String imgName = "TS_07_20_12_18_18";
     public static storeData storeData;
     public static ObservableList<SegmentationResults> segmentationResults = FXCollections.observableArrayList();
 

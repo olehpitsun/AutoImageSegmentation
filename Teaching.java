@@ -29,7 +29,7 @@ public class Teaching {
     }
 
     /**
-        ПІДІГНАТИ РОЗМІРИ ЗОБРАЖЕНЬ
+     ПІДІГНАТИ РОЗМІРИ ЗОБРАЖЕНЬ
      * @param originalMat - оригінальне RGB зображення
      */
     private void normalImageSize(Mat originalMat){
@@ -80,17 +80,16 @@ public class Teaching {
     public void setOutputValues() {
 
         /**
-        int index = 0; // індекс елемента в колекції
-        double minDistance = Main.segmentationResults.get(0).distance;
-
-        for(int i = 1; i < Main.segmentationResults.size(); i++ ){
-            if(Main.segmentationResults.get(i).distance < minDistance){
-                minDistance = Main.segmentationResults.get(i).distance;
-                index = i;
-            }
-        }
-        storeResultDataToDB (index);// зберігання запису в БД
-        **/
+         int index = 0; // індекс елемента в колекції
+         double minDistance = Main.segmentationResults.get(0).distance;
+         for(int i = 1; i < Main.segmentationResults.size(); i++ ){
+         if(Main.segmentationResults.get(i).distance < minDistance){
+         minDistance = Main.segmentationResults.get(i).distance;
+         index = i;
+         }
+         }
+         storeResultDataToDB (index);// зберігання запису в БД
+         **/
         setHumanValue();
         Main.segmentationResults.clear();
     }

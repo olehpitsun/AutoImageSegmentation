@@ -1,10 +1,12 @@
 import modules.ImageManagerModule;
-import org.opencv.core.Mat;
+import org.opencv.core.*;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Moments;
 import tools.StartImageParams;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,7 +47,8 @@ public class AutoSegmentation {
                 if(priorityID != 0){
                     this.getSPecialValuesForImage(priorityID);
                 }else {
-                    System.out.println("Blue value doesn't found");
+                    System.out.println("Blue value doesn't found. hist value " + histogramIDs.get(0));
+                    this.getSPecialValuesForImage(histogramIDs.get(0));
                 }
 
             }else {
@@ -69,7 +72,38 @@ public class AutoSegmentation {
         /*** ПОРОГОВА СЕШМЕНТАЦІЯ
          * перетворення експертного зобр в градації сірого*/
         Imgproc.threshold(newImageMat, newImageMat, 200, 255, Imgproc.THRESH_BINARY);
-        Highgui.imwrite(Main.pathToImg + Main.imgName + "\\" + "result_" + lowThreshValue + ".jpg", newImageMat);
+        //Highgui.imwrite(Main.pathToImg + Main.imgName + "\\" + "result_" + lowThreshValue + ".jpg", newImageMat);
+
+        this.localProcessing(newImageMat);
+    }
+
+    private void localProcessing(Mat img5){
+
+        System.out.println( "start");
+
+        Mat src_gray = img5;
+        src_gray.convertTo(src_gray, CvType.CV_32SC1);
+
+
+
+        //Imgproc.cvtColor(src, src_gray, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.blur(src_gray, src_gray, new Size(3, 3));
+
+        Mat canny_output = new Mat();
+        List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+
+        Imgproc.findContours(src_gray, contours, new Mat(), Imgproc.RETR_FLOODFILL, Imgproc.CHAIN_APPROX_SIMPLE);
+
+// Draw all the contours such that they are filled in.
+        Mat contourImg = new Mat();
+        for (int i = 0; i < 15; i++) {
+
+            Imgproc.drawContours(src_gray, contours, i, new Scalar(255, 0, 255),6);
+        }
+
+        Highgui.imwrite(Main.pathToImg + Main.imgName + "\\" + "result_" + 768 + ".jpg", src_gray);
+
+System.out.println( "Fin");
     }
 
 }

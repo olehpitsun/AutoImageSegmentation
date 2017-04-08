@@ -43,11 +43,11 @@ public class StartImageParams {
         this.greenVlue = (int)sumg/num;
         this.blueValue = (int)sumb/num;
 
-        int bright = (int)(299 * sumr + 587 * sumg + 114 * sumb) / 10000;
-        bright = bright/1000;
+        int bright = (int) (299 * sumr + 587 * sumg + 114 * sumb) / num;
+        //bright = bright/1000;
 
-        this.histogramAverage = (int)bright;
-        System.out.println(  this.histogramAverage + " " +this.blueValue );
+        this.histogramAverage = Math.abs(bright);
+        System.out.println( "Brightness " + this.histogramAverage + " Dlue " +this.blueValue );
 
     }
 
