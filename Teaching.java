@@ -10,6 +10,9 @@ import tools.StartImageParams;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by oleh on 21.12.2016.
@@ -45,37 +48,99 @@ public class Teaching {
      */
     public void generateImages(StartImageParams stip){
 
+        long start = System.currentTimeMillis();
+
         List<Integer> lowTreshValue = Arrays.asList(65,75,80,85,90,95, 100, 105);
 
         int lastID = setInputValues(stip.getHistogramAverage(), stip.getRedValue(), stip.getGreenVlue(), stip.getBlueValue());
 
-        for(int i = 0; i < lowTreshValue.size(); i++)
-        {
-            Mat newImageMat = new Mat();
-            this.normalSegmentedImgMat.copyTo(newImageMat);
+//        for(int i = 0; i < lowTreshValue.size(); i++)
+//        {
+//            Mat newImageMat = new Mat();
+//            this.normalSegmentedImgMat.copyTo(newImageMat);
+//
+//            /** ЗОБРАЖЕННЯ ПІСЛЯ ОБРОБКИ*/
+//            ImageManagerModule imageManagerModule = new ImageManagerModule();
+//            newImageMat = imageManagerModule.autoImageCorrection(newImageMat,lowTreshValue.get(i));
+//
+//            /*** ПОРОГОВА СЕШМЕНТАЦІЯ
+//             * перетворення експертного зобр в градації сірого*/
+//            Imgproc.threshold(newImageMat, newImageMat, 200, 255, Imgproc.THRESH_BINARY);
+//            Highgui.imwrite(Main.pathToImg + Main.imgName + "\\" + i + "___" + lowTreshValue.get(i) + ".jpg", newImageMat);
+//
+//            /*** ПОРІВНЯННЯ ЗОБРАЖЕНЬ*/
+//            System.out.println("\n====================\n lowTreshValue = " + lowTreshValue.get(i) );
+//            //comparator.Main.main(newImageMat, this.expertImgMat);
+//
+//            /** FRAG*/
+//            FRAG frag = new FRAG(newImageMat, expertImgMat);
+//            System.out.println("\nFRAG = " + frag.getResult());
+//
+//            Main.segmentationResults.add(new SegmentationResults(lastID, Main.imgName, lowTreshValue.get(i),
+//                    comparator.Main.getDistance(),frag.getResult(),0));
+//        }
 
-            /** ЗОБРАЖЕННЯ ПІСЛЯ ОБРОБКИ*/
-            ImageManagerModule imageManagerModule = new ImageManagerModule();
-            newImageMat = imageManagerModule.autoImageCorrection(newImageMat,lowTreshValue.get(i));
+        System.out.println("Start " + System.currentTimeMillis());
+        executeQueries();
 
-            /*** ПОРОГОВА СЕШМЕНТАЦІЯ
-             * перетворення експертного зобр в градації сірого*/
-            Imgproc.threshold(newImageMat, newImageMat, 200, 255, Imgproc.THRESH_BINARY);
-            Highgui.imwrite(Main.pathToImg + Main.imgName + "\\" + i + "___" + lowTreshValue.get(i) + ".jpg", newImageMat);
-
-            /*** ПОРІВНЯННЯ ЗОБРАЖЕНЬ*/
-            System.out.println("\n====================\n lowTreshValue = " + lowTreshValue.get(i) );
-            //comparator.Main.main(newImageMat, this.expertImgMat);
-
-            /** FRAG*/
-            FRAG frag = new FRAG(newImageMat, expertImgMat);
-            System.out.println("\nFRAG = " + frag.getResult());
-
-            Main.segmentationResults.add(new SegmentationResults(lastID, Main.imgName, lowTreshValue.get(i),
-                    comparator.Main.getDistance(),frag.getResult(),0));
-        }
 
     }
+
+    public  void executeQueries() {
+
+        //List<Integer> lowTreshValue = Arrays.asList(65,75,80,85,90,95, 100, 105);
+
+        Integer lowTreshValue[] = {65,75,80,85,90,95, 100, 105};
+
+        ExecutorService threadPool = Executors.newFixedThreadPool(lowTreshValue.length);
+        // submit jobs to be executing by the pool
+        for (int i = 0; i < lowTreshValue.length; i++) {
+            final int j = i;
+            threadPool.submit(() -> executeQuery(j));
+        }
+        // once you've submitted your last job to the service it should be shut down
+        threadPool.shutdown();
+        // wait for the threads to finish if necessary
+        try {
+            threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public  void executeQuery(final int index) {
+
+        System.out.println("result = " + index);
+        Integer lowTreshValue[] = {65,75,80,85,90,95, 100, 105};
+        Mat newImageMat = new Mat();
+        this.normalSegmentedImgMat.copyTo(newImageMat);
+
+        /** ЗОБРАЖЕННЯ ПІСЛЯ ОБРОБКИ*/
+        ImageManagerModule imageManagerModule = new ImageManagerModule();
+        newImageMat = imageManagerModule.autoImageCorrection(newImageMat,lowTreshValue[index]);
+
+        /*** ПОРОГОВА СЕШМЕНТАЦІЯ
+         * перетворення експертного зобр в градації сірого*/
+        Imgproc.threshold(newImageMat, newImageMat, 200, 255, Imgproc.THRESH_BINARY);
+        Highgui.imwrite(Main.pathToImg + Main.imgName + "\\" + index + "___" + lowTreshValue[index] + ".jpg", newImageMat);
+
+        /*** ПОРІВНЯННЯ ЗОБРАЖЕНЬ*/
+        System.out.println("\n====================\n lowTreshValue = " + lowTreshValue[index] );
+        //comparator.Main.main(newImageMat, this.expertImgMat);
+
+        /** FRAG*/
+        FRAG frag = new FRAG(newImageMat, this.expertImgMat);
+        System.out.println("\nFRAG = " + frag.getResult());
+
+        long end = System.currentTimeMillis();
+
+        System.out.println("End Time = " + end);
+
+        //Main.segmentationResults.add(new SegmentationResults(lastID, Main.imgName, lowTreshValue.get(i),
+                //comparator.Main.getDistance(),frag.getResult(),0));
+    }
+
+
 
     public void setOutputValues() {
 
